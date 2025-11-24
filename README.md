@@ -36,3 +36,7 @@ Then in main repository folder.
 docker compose up
 ```
 Finally, authorize using link in stripe container.
+
+## Authors
+
+[@sokvl](https://github.com/sokvl), [@miiozia](https://github.com/miiozia), [@Artmansky](https://github.com/Artmansky), [@FilipCichosz](https://github.com/FilipCichosz), [@tarasiukkarol](https://github.com/tarasiukkarol), [@1SHIGERU](https://github.com/1SHIGERU)
