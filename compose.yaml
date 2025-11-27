@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.4
+    container_name: cs2_market_postgres
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PWD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - webnet
+      
+  django:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - webnet
+
+  react:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    stdin_open: true
+    tty: true
+    environment:
+       - CHOKIDAR_USEPOLLING=true
+    depends_on:
+      - django
+    networks:
+      - webnet
+    restart: on-failure
+
+  stripe:
+    image: stripe/stripe-cli:v1.19.4
+    command: listen --forward-to django:8000/web_hook/
+    environment:
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_ENDPOINT_SECRET}
+      - XDG_DATA_HOME=/tmp/.stripe-data
+      - XDG_CONFIG_HOME=/tmp/.stripe-config
+    volumes:
+      - stripe-data:/tmp/.stripe-data
+      - stripe-config:/tmp/.stripe-config
+    depends_on:
+      - django
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
+volumes:
+  postgres-data:
+  stripe-data:
+  stripe-config:
