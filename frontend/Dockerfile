@@ -1,30 +1,21 @@
-# Dockerfile dla React (frontend)
-FROM node:14 as build
+# frontend/Dockerfile.dev
+FROM node:20
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+# Kopiujemy tylko package.json by zainstalować zależności (cache layer)
+COPY package*.json ./
 
-ENV NPM_CONFIG_CACHE=/usr/src/app/.npm-cache
-ENV PATH /app/node_modules/.bin:$PATH
-#Change to prod
+# Instalujemy zależności wewnątrz kontenera
+RUN npm ci
+
+# Ustawienia środowiska (w razie potrzeby)
+ENV CHOKIDAR_USEPOLLING=true
 ENV NODE_ENV=development
 
-RUN --mount=type=cache,target=/root/.npm \
-    --mount=type=cache,target=/usr/src/app/.npm-cache \
-    npm ci \
-    npm install @stripe/stripe-js 
+# Montujemy kod przez docker-compose, dlatego nie kopiujemy src tutaj
 
-COPY . .
-RUN npm run build
+EXPOSE 3000
 
-FROM nginx:alpine
-
-RUN rm -rf /usr/share/nginx/html/*
-COPY --from=build /app/build /usr/share/nginx/html
-
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# Upewnij się, że "start" w package.json uruchamia dev-server na 0.0.0.0
+CMD ["npm", "start"]
