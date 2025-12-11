@@ -1,9 +1,7 @@
-
 import React, {useState, useEffect} from 'react'
 import {useTheme} from '../../ThemeContext';
 import Stars from '../ratingSystem/Stars';
 import axios from 'axios';
-import '../../styles/adminPanel.css';
 
 const AdminPanel = ({steamid}) => {
 
@@ -56,7 +54,6 @@ const AdminPanel = ({steamid}) => {
     const handleMinPriceChange = (event) => {
       const value = event.target.value;
       setPriceMin(value);
-    
     };
   
     const handleMaxPriceChange = (event) => {
@@ -146,29 +143,32 @@ const AdminPanel = ({steamid}) => {
         if (selectedOption === 'option1') {
 
             return (
-              <div className="flex flex-col items-center justify-center">
-                <p className="mt-8 text-2xl text-center">Wyszukaj użytkowników z wybranego zakresu ocen</p><br/>
-                <div className="flex items-center justify-center">
-                  <p>Od: </p>
-                  <Stars onStarChange={(stars) => handleStarChange(stars, 1)} />
+              <div className="report-form">
+                <p className="form-title">Search users with selected rating range</p>
+                <div className="stars-section">
+                  <div className="star-row">
+                    <span className="star-label">From:</span>
+                    <Stars onStarChange={(stars) => handleStarChange(stars, 1)} />
+                  </div>
+                  <div className="star-row">
+                    <span className="star-label">To:</span>
+                    <Stars onStarChange={(stars) => handleStarChange(stars, 2)} />
+                  </div>
                 </div>
-                <div className="flex items-center justify-center">
-                  <p>Do: </p>
-                  <Stars onStarChange={(stars) => handleStarChange(stars, 2)} />
-                </div>
-                <button onClick={handleRaport1Generate} className={`font-bold py-2 px-4 rounded mt-4 ${isDarkMode ? 'bg-[#242633]' : 'bg-blue-500 text-white hover:bg-blue-700'}`}>
-                  Wygeneruj raport
+                <button onClick={handleRaport1Generate} className="generate-btn">
+                  <i className="fa-solid fa-chart-line"></i>
+                  Generate Report
                 </button>
               </div>
             );
           }
           else if (selectedOption === 'option2') {
           return (
-            <div className="flex flex-col items-center justify-center">
-                <p className="mt-8 text-2xl text-center">Raport 2</p><br/>
-                <form class="block w-96 items-center justify-center shadow-lg p-4 rounded-xl">
-                    <div class="grid grid-cols-2 gap-4">
-                    <div class="relative z-0 w-full mb-5">
+            <div className="report-form">
+                <p className="form-title">Transaction Report Generator</p>
+                <div className="form-grid">
+                    <div className="input-group">
+                      <label>Min Price ($)</label>
                       <input
                         onChange={handleMinPriceChange}
                         onKeyDown={(e) => {
@@ -177,58 +177,65 @@ const AdminPanel = ({steamid}) => {
                           }
                         }}
                         type="number"
-                        name="dd"
-                        placeholder="price min:"
-                        class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans"
+                        placeholder="0.00"
+                        className="modern-input"
                       />
-                      <label for="dd" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
                     </div>
-                        <div class="relative z-0 w-full mb-5">
-                        <input onKeyDown={(e) => {
+                    <div className="input-group">
+                      <label>Max Price ($)</label>
+                      <input 
+                        onKeyDown={(e) => {
                           if (e.key === 'e' || e.key === 'E' || e.key === '-' || e.key === '+') {
                             e.preventDefault();
                           }
-                        }} onChange={handleMaxPriceChange} type="number" name="mm" placeholder="price max:" class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans" />
-                        <label for="mm" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
-                        </div>
+                        }} 
+                        onChange={handleMaxPriceChange} 
+                        type="number" 
+                        placeholder="0.00"
+                        className="modern-input"
+                      />
                     </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="relative z-0 w-full mb-5">
-                        <input onChange={handleStartDateChange} type="date" name="dd" placeholder="od: " class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans" />
-                        <label for="dd" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
-                        </div>
-                        <div class="relative z-0 w-full mb-5">
-                        <input onChange={handleEndDateChange} type="date" name="mm" placeholder="do: " class="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-indigo-600 border-gray-200 font-sans" />
-                        <label for="mm" class="absolute duration-200 top-3 -z-1 origin-0 text-gray-500 text-base"></label>
-                        </div>
+                    <div className="input-group">
+                      <label>Start Date</label>
+                      <input 
+                        onChange={handleStartDateChange} 
+                        type="date" 
+                        className="modern-input"
+                      />
                     </div>
-                    
-                    <div class="relative z-0 w-full mb-5">
-                    <select
-                      id="category"
-                      name="category"
-                      className="pt-3 pb-2 block w-full px-0 mt-0 bg-transparent border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:bg-transparent focus:border-indigo-600 border-gray-200 font-sans"
-                      value={selectedCategory}
-                      onChange={handleCategoryChange}
-                    >
-                      <option className="text-black" value="all" defaultChecked>All</option>
-                      <option className="text-black" value="knives">Knives</option>
-                      <option className="text-black" value="rifles">Rifles</option>
-                      <option className="text-black" value="sniper_rifles">Sniper Rifles</option>
-                      <option className="text-black" value="pistols">Pistols</option>
-                      <option className="text-black" value="smg">SMG</option>
-                      <option className="text-black" value="shotguns">Shotguns</option>
-                      <option className="text-black" value="machine_guns">Machine Guns</option>
-                      <option className="text-black" value="container">Containers</option>
-                      <option className="text-black" value="gloves">Gloves</option>
-                      <option className="text-black" value="agents">Agents</option>
-                      <option className="text-black" value="inne">Inne</option>
-                    </select>
-                    </div>              
-                </form>
-                <button onClick={handleRaport2Generate} className={` font-bold py-2 px-4 rounded mt-4 ${isDarkMode ? 'bg-[#242633]' : 'bg-blue-500 text-white hover:bg-blue-700'}`}>
-                  Wygeneruj raport
+                    <div className="input-group">
+                      <label>End Date</label>
+                      <input 
+                        onChange={handleEndDateChange} 
+                        type="date"
+                        className="modern-input"
+                      />
+                    </div>
+                    <div className="input-group full-width">
+                      <label>Category</label>
+                      <select
+                        className="modern-select"
+                        value={selectedCategory}
+                        onChange={handleCategoryChange}
+                      >
+                        <option value="all">All Categories</option>
+                        <option value="knives">Knives</option>
+                        <option value="rifles">Rifles</option>
+                        <option value="sniper_rifles">Sniper Rifles</option>
+                        <option value="pistols">Pistols</option>
+                        <option value="smg">SMG</option>
+                        <option value="shotguns">Shotguns</option>
+                        <option value="machine_guns">Machine Guns</option>
+                        <option value="container">Containers</option>
+                        <option value="gloves">Gloves</option>
+                        <option value="agents">Agents</option>
+                        <option value="inne">Other</option>
+                      </select>
+                    </div>
+                </div>
+                <button onClick={handleRaport2Generate} className="generate-btn">
+                  <i className="fa-solid fa-chart-bar"></i>
+                  Generate Report
                 </button>
             </div>
           );
@@ -239,116 +246,634 @@ const AdminPanel = ({steamid}) => {
 
     return (
         <>
-     
-         <div className={`${isDarkMode ? 'bg-[#1f1d24]' : 'bg-gradient-to-r from-blue-800 to-blue-900 text-white' } p-6 rounded-xl mt-2 h-full md:w-2/2 md:ml-6'`}>
-            <p className='mb-4 text-3xl text-center'> Admin Panel </p>
+         
+         <div className="admin-container">
+            <div className="admin-header">
+              <i className="fa-solid fa-user-shield admin-icon"></i>
+              <h1>Admin Panel</h1>
+            </div>
 
-            {showPopup && raport1 ? (
+            {showPopup && raport1 && (
               <>
-                <div className="overlay" onClick={() => setShowPopup(false)}></div>
-                <div className="popUp">
+                <div className="modal-overlay" onClick={() => setShowPopup(false)}></div>
+                <div className="modal-popup">
                   {isLoading ? (
-                    <>
-                      <h1 className='text-3xl text-center'> Raport is generating, wait a second please ... </h1>
-                      <div className="loading">Loading&#8230;</div>
-                    </>
+                    <div className="loading-state">
+                      <div className="spinner"></div>
+                      <h2>Generating Report...</h2>
+                      <p>Please wait a moment</p>
+                    </div>
                   ) : (
-                    <>
-                      <h1 className='text-3xl text-center mb-4'> Raport results</h1>
-                      <p className='text-xl text-center'>Users with average rating between {selectedStars} and {selectedStars2} <i className="fa-solid fa-star "></i></p>
-                      <table className="mt-8 w-full min-w-max table-auto text-left">
-                        <thead>
-                          <tr className='text-xl'>
-                            <th className="text-center">#</th>
-                            <th className="text-center">avatar</th>
-                            <th className="text-center">username</th>
-                            <th className="text-center">avg rating</th>
-                            <th className="text-center">no rates</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {raport1Data.map((user, i) => (
-                            <tr className='border-b' key={i}>
-                              <td className="text-center">{i+1}</td>
-                              <td className="text-center"><img src={user.avatar_url} alt="avatar" className="w-10 h-10 rounded-full mx-auto" /></td>
-                              <td className="text-center">{user.username}</td>
-                              <td className="text-center">{user.average_rating}</td>
-                              <td className="text-center">{user.number_of_ratings}</td>
+                    <div className="report-results">
+                      <h2 className="results-title">Report Results</h2>
+                      <p className="results-subtitle">
+                        Users with average rating between {selectedStars} and {selectedStars2} <i className="fa-solid fa-star"></i>
+                      </p>
+                      <div className="table-container">
+                        <table className="results-table">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Avatar</th>
+                              <th>Username</th>
+                              <th>Avg Rating</th>
+                              <th>No. Ratings</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </>
+                          </thead>
+                          <tbody>
+                            {raport1Data.map((user, i) => (
+                              <tr key={i}>
+                                <td>{i+1}</td>
+                                <td>
+                                  <img src={user.avatar_url} alt="avatar" className="avatar-img" />
+                                </td>
+                                <td>{user.username}</td>
+                                <td>
+                                  <span className="rating-badge">{user.average_rating} <i className="fa-solid fa-star"></i></span>
+                                </td>
+                                <td>{user.number_of_ratings}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   )}
                 </div>
               </>
-            ) : (
-              <></>
             )}
 
-                          {showPopup && raport2 ? (
-                            <>
-                              <div className="overlay" onClick={() => setShowPopup(false)}></div>
-                              <div className="popUp">
-                                {isLoading ? (
-                                  <>
-                                    <h1 className='text-3xl text-center'> Raport2 is generating, wait a second please ... </h1>
-                                    <div className="loading">Loading&#8230;</div>
-                                  </>
-                                ) : (
-                                  <>
-                                    <p className='text-3xl text-center mb-4'> Raport2 results</p>
-                                    <p className='text-xl text-center'>Transactions between {priceMin} and {priceMax} $ from {startDate} to {endDate} in category: {selectedCategory}</p>
-                                    <table className="mt-8 w-full min-w-max table-auto text-left">
-                                      <thead>
-                                        <tr className='text-x borderl'>
-                                          <th className="text-center">#</th>
-                                          <th className="text-center">date</th>
-                                          <th className="text-center">avg price</th>
-                                          <th className="text-center">total_price</th>
-                                          <th className="text-center">quantity</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                          {raport2Data.map((user, i) => (
-                                            <tr className='border' key={i}>
-                                              <td className="text-center">{i+1}</td>
-                                              <td className="text-center">{user.date}</td>
-                                              <td className="text-center">{user.average_price}$</td>
-                                              <td className="text-center">{user.total_price}$</td>
-                                              <td className="text-center">{user.quantity}</td>
-                                            </tr>
-                                          ))}
-                                      </tbody>
-                                    </table>
-                                    <p className='text-3xl text-center mt-8'>Total results: </p>
-                                      <div className='mx-auto space-x-4 flex justify-center mt-4'>
-                                        <div className='p-2 text-center border rounded-xl w-28 h-28'> Average price: <p className='mt-2'> {report21Data.average_price}$ </p> </div>
-                                        <div className='p-2 text-center border rounded-xl w-28 h-28'> Quantity: <p className='mt-2'>{report21Data.quantity} transactions </p> </div>
-                                        <div className='p-2 text-center border rounded-xl w-28 h-28'> Money spent: <p className='mt-2'>{report21Data.total_price} $</p> </div>
-                                      </div>
-                                  </>
-                                )}
-                              </div>
-                            </>
-                          ) : (
-                            <></>
-                          )}
-
-
-            <div className="grid w-[20rem] grid-cols-2 gap-2 rounded-xl text-black bg-gray-200 p-2 mx-auto items-center justify-center">
-                <div>
-                    <input type="radio" checked={selectedOption === 'option1'} id="1" onChange={handleRadioChange}  name="option" value="option1" className="peer hidden" />
-                    <label htmlFor="1" className="block cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">Raport 1</label>
+            {showPopup && raport2 && (
+              <>
+                <div className="modal-overlay" onClick={() => setShowPopup(false)}></div>
+                <div className="modal-popup">
+                  {isLoading ? (
+                    <div className="loading-state">
+                      <div className="spinner"></div>
+                      <h2>Generating Report...</h2>
+                      <p>Please wait a moment</p>
+                    </div>
+                  ) : (
+                    <div className="report-results">
+                      <h2 className="results-title">Transaction Report</h2>
+                      <p className="results-subtitle">
+                        Transactions between ${priceMin} and ${priceMax} from {startDate} to {endDate}
+                        <br />Category: <span className="category-badge">{selectedCategory}</span>
+                      </p>
+                      <div className="table-container">
+                        <table className="results-table">
+                          <thead>
+                            <tr>
+                              <th>#</th>
+                              <th>Date</th>
+                              <th>Avg Price</th>
+                              <th>Total Price</th>
+                              <th>Quantity</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {raport2Data.map((item, i) => (
+                              <tr key={i}>
+                                <td>{i+1}</td>
+                                <td>{item.date}</td>
+                                <td>${item.average_price}</td>
+                                <td>${item.total_price}</td>
+                                <td>{item.quantity}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      <h3 className="summary-title">Total Summary</h3>
+                      <div className="summary-cards">
+                        <div className="summary-card">
+                          <i className="fa-solid fa-money-bill-wave"></i>
+                          <div className="card-content">
+                            <span className="card-label">Average Price</span>
+                            <span className="card-value">${report21Data.average_price}</span>
+                          </div>
+                        </div>
+                        <div className="summary-card">
+                          <i className="fa-solid fa-box"></i>
+                          <div className="card-content">
+                            <span className="card-label">Quantity</span>
+                            <span className="card-value">{report21Data.quantity}</span>
+                          </div>
+                        </div>
+                        <div className="summary-card">
+                          <i className="fa-solid fa-dollar-sign"></i>
+                          <div className="card-content">
+                            <span className="card-label">Total Value</span>
+                            <span className="card-value">${report21Data.total_price}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
+              </>
+            )}
 
-                <div>
-                    <input type="radio" checked={selectedOption === 'option2'} id="2" onChange={handleRadioChange} name="option" value="option2" className="peer hidden" />
-                    <label htmlFor="2" className="block cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">Raport 2</label>
+            <div className="report-selector">
+                <div className="selector-option">
+                    <input 
+                      type="radio" 
+                      checked={selectedOption === 'option1'} 
+                      id="report1" 
+                      onChange={handleRadioChange}  
+                      name="option" 
+                      value="option1" 
+                    />
+                    <label htmlFor="report1">
+                      <i className="fa-solid fa-users"></i>
+                      User Rating Report
+                    </label>
+                </div>
+                <div className="selector-option">
+                    <input 
+                      type="radio" 
+                      checked={selectedOption === 'option2'} 
+                      id="report2" 
+                      onChange={handleRadioChange} 
+                      name="option" 
+                      value="option2" 
+                    />
+                    <label htmlFor="report2">
+                      <i className="fa-solid fa-chart-line"></i>
+                      Transaction Report
+                    </label>
                 </div>                        
             </div>   
             {renderForm()}       
          </div>
+
+         <style jsx>{`
+           .admin-container {
+             width: 100%;
+             padding: 1.5rem;
+             animation: fadeInUp 0.6s ease-out;
+           }
+
+           .admin-header {
+             display: flex;
+             align-items: center;
+             gap: 1rem;
+             margin-bottom: 2.5rem;
+             padding: 2rem;
+             background: rgba(255, 255, 255, 0.05);
+             backdrop-filter: blur(20px);
+             border: 1px solid rgba(255, 255, 255, 0.1);
+             border-radius: 20px;
+           }
+
+           .admin-icon {
+             font-size: 2.5rem;
+             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             -webkit-background-clip: text;
+             -webkit-text-fill-color: transparent;
+             background-clip: text;
+           }
+
+           .admin-header h1 {
+             font-size: 2rem;
+             font-weight: 700;
+             color: white;
+             margin: 0;
+           }
+
+           .report-selector {
+             display: flex;
+             gap: 1rem;
+             margin-bottom: 2rem;
+             padding: 0.5rem;
+             background: rgba(255, 255, 255, 0.05);
+             border-radius: 16px;
+           }
+
+           .selector-option {
+             flex: 1;
+             position: relative;
+           }
+
+           .selector-option input[type="radio"] {
+             position: absolute;
+             opacity: 0;
+             width: 0;
+             height: 0;
+           }
+
+           .selector-option label {
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             gap: 0.75rem;
+             padding: 1.25rem;
+             background: rgba(255, 255, 255, 0.03);
+             border: 2px solid rgba(255, 255, 255, 0.1);
+             border-radius: 12px;
+             color: rgba(255, 255, 255, 0.7);
+             font-size: 1rem;
+             font-weight: 600;
+             cursor: pointer;
+             transition: all 0.3s ease;
+           }
+
+           .selector-option input:checked + label {
+             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             border-color: transparent;
+             color: white;
+             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+           }
+
+           .selector-option label:hover {
+             border-color: rgba(102, 126, 234, 0.5);
+           }
+
+           .report-form {
+             background: rgba(255, 255, 255, 0.05);
+             backdrop-filter: blur(20px);
+             border: 1px solid rgba(255, 255, 255, 0.1);
+             border-radius: 20px;
+             padding: 2.5rem;
+           }
+
+           .form-title {
+             font-size: 1.5rem;
+             font-weight: 700;
+             color: white;
+             text-align: center;
+             margin: 0 0 2rem 0;
+           }
+
+           .stars-section {
+             display: flex;
+             flex-direction: column;
+             gap: 1.5rem;
+             margin-bottom: 2rem;
+           }
+
+           .star-row {
+             display: flex;
+             align-items: center;
+             gap: 1.5rem;
+             padding: 1.25rem;
+             background: rgba(255, 255, 255, 0.03);
+             border-radius: 12px;
+           }
+
+           .star-label {
+             font-size: 1.1rem;
+             font-weight: 600;
+             color: white;
+             min-width: 60px;
+           }
+
+           .form-grid {
+             display: grid;
+             grid-template-columns: repeat(2, 1fr);
+             gap: 1.5rem;
+             margin-bottom: 2rem;
+           }
+
+           .input-group {
+             display: flex;
+             flex-direction: column;
+             gap: 0.75rem;
+           }
+
+           .input-group.full-width {
+             grid-column: 1 / -1;
+           }
+
+           .input-group label {
+             font-size: 0.95rem;
+             font-weight: 600;
+             color: rgba(255, 255, 255, 0.8);
+           }
+
+           .modern-input, .modern-select {
+             padding: 1rem 1.25rem;
+             background: rgba(255, 255, 255, 0.05);
+             border: 2px solid rgba(255, 255, 255, 0.1);
+             border-radius: 12px;
+             color: white;
+             font-size: 1rem;
+             transition: all 0.3s ease;
+           }
+
+           .modern-input:focus, .modern-select:focus {
+             outline: none;
+             border-color: #667eea;
+             background: rgba(102, 126, 234, 0.1);
+             box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+           }
+
+           .modern-input::placeholder {
+             color: rgba(255, 255, 255, 0.3);
+           }
+
+           .modern-select option {
+             background: #1a1a2e;
+             color: white;
+           }
+
+           .generate-btn {
+             width: 100%;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             gap: 0.75rem;
+             padding: 1.25rem 2rem;
+             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             border: none;
+             border-radius: 12px;
+             color: white;
+             font-size: 1.1rem;
+             font-weight: 600;
+             cursor: pointer;
+             transition: all 0.3s ease;
+             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+           }
+
+           .generate-btn:hover {
+             transform: translateY(-2px);
+             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+           }
+
+           .modal-overlay {
+             position: fixed;
+             inset: 0;
+             background: rgba(0, 0, 0, 0.75);
+             backdrop-filter: blur(10px);
+             z-index: 999;
+             animation: fadeIn 0.3s ease-out;
+           }
+
+           .modal-popup {
+             position: fixed;
+             top: 50%;
+             left: 50%;
+             transform: translate(-50%, -50%);
+             width: 90%;
+             max-width: 1000px;
+             max-height: 85vh;
+             background: rgba(20, 20, 30, 0.98);
+             backdrop-filter: blur(30px);
+             border: 1px solid rgba(255, 255, 255, 0.1);
+             border-radius: 24px;
+             padding: 2.5rem;
+             z-index: 1000;
+             overflow-y: auto;
+             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+             animation: slideUp 0.4s ease-out;
+           }
+
+           .loading-state {
+             display: flex;
+             flex-direction: column;
+             align-items: center;
+             justify-content: center;
+             padding: 4rem;
+             text-align: center;
+           }
+
+           .spinner {
+             width: 60px;
+             height: 60px;
+             border: 4px solid rgba(255, 255, 255, 0.1);
+             border-top-color: #667eea;
+             border-radius: 50%;
+             animation: spin 1s linear infinite;
+             margin-bottom: 2rem;
+           }
+
+           .loading-state h2 {
+             font-size: 1.75rem;
+             font-weight: 700;
+             color: white;
+             margin: 0 0 0.5rem 0;
+           }
+
+           .loading-state p {
+             font-size: 1.1rem;
+             color: rgba(255, 255, 255, 0.6);
+             margin: 0;
+           }
+
+           .report-results {
+             display: flex;
+             flex-direction: column;
+             gap: 2rem;
+           }
+
+           .results-title {
+             font-size: 2rem;
+             font-weight: 700;
+             color: white;
+             text-align: center;
+             margin: 0;
+           }
+
+           .results-subtitle {
+             font-size: 1.1rem;
+             color: rgba(255, 255, 255, 0.8);
+             text-align: center;
+             margin: 0;
+             line-height: 1.6;
+           }
+
+           .category-badge {
+             display: inline-block;
+             padding: 0.25rem 0.75rem;
+             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             border-radius: 8px;
+             font-weight: 700;
+           }
+
+           .table-container {
+             overflow-x: auto;
+             border-radius: 16px;
+             border: 1px solid rgba(255, 255, 255, 0.1);
+           }
+
+           .results-table {
+             width: 100%;
+             border-collapse: collapse;
+           }
+
+           .results-table thead {
+             background: rgba(102, 126, 234, 0.2);
+           }
+
+           .results-table th {
+             padding: 1rem;
+             text-align: center;
+             font-weight: 700;
+             color: white;
+             font-size: 1rem;
+           }
+
+           .results-table td {
+             padding: 1rem;
+             text-align: center;
+             color: rgba(255, 255, 255, 0.9);
+             border-top: 1px solid rgba(255, 255, 255, 0.05);
+           }
+
+           .results-table tbody tr {
+             transition: background 0.2s ease;
+           }
+
+           .results-table tbody tr:hover {
+             background: rgba(255, 255, 255, 0.03);
+           }
+
+           .avatar-img {
+             width: 40px;
+             height: 40px;
+             border-radius: 50%;
+             border: 2px solid rgba(102, 126, 234, 0.5);
+           }
+
+           .rating-badge {
+             display: inline-flex;
+             align-items: center;
+             gap: 0.25rem;
+             padding: 0.5rem 1rem;
+             background: rgba(255, 193, 7, 0.2);
+             border-radius: 8px;
+             font-weight: 700;
+             color: #ffc107;
+           }
+
+           .summary-title {
+             font-size: 1.5rem;
+             font-weight: 700;
+             color: white;
+             text-align: center;
+             margin: 0;
+           }
+
+           .summary-cards {
+             display: grid;
+             grid-template-columns: repeat(3, 1fr);
+             gap: 1.5rem;
+           }
+
+           .summary-card {
+             display: flex;
+             align-items: center;
+             gap: 1.5rem;
+             padding: 1.5rem;
+             background: rgba(255, 255, 255, 0.05);
+             border: 1px solid rgba(255, 255, 255, 0.1);
+             border-radius: 16px;
+             transition: transform 0.3s ease;
+           }
+
+           .summary-card:hover {
+             transform: translateY(-5px);
+             background: rgba(255, 255, 255, 0.08);
+           }
+
+           .summary-card i {
+             font-size: 2.5rem;
+             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+             -webkit-background-clip: text;
+             -webkit-text-fill-color: transparent;
+             background-clip: text;
+           }
+
+           .card-content {
+             display: flex;
+             flex-direction: column;
+             gap: 0.5rem;
+           }
+
+           .card-label {
+             font-size: 0.9rem;
+             color: rgba(255, 255, 255, 0.7);
+           }
+
+           .card-value {
+             font-size: 1.5rem;
+             font-weight: 700;
+             color: white;
+           }
+
+           @keyframes fadeInUp {
+             from {
+               opacity: 0;
+               transform: translateY(20px);
+             }
+             to {
+               opacity: 1;
+               transform: translateY(0);
+             }
+           }
+
+           @keyframes fadeIn {
+             from { opacity: 0; }
+             to { opacity: 1; }
+           }
+
+           @keyframes slideUp {
+             from {
+               opacity: 0;
+               transform: translate(-50%, -40%);
+             }
+             to {
+               opacity: 1;
+               transform: translate(-50%, -50%);
+             }
+           }
+
+           @keyframes spin {
+             to { transform: rotate(360deg); }
+           }
+
+           @media (max-width: 1024px) {
+             .summary-cards {
+               grid-template-columns: 1fr;
+             }
+
+             .form-grid {
+               grid-template-columns: 1fr;
+             }
+           }
+
+           @media (max-width: 768px) {
+             .admin-container {
+               padding: 1rem;
+             }
+
+             .admin-header {
+               padding: 1.5rem;
+             }
+
+             .admin-header h1 {
+               font-size: 1.5rem;
+             }
+
+             .report-selector {
+               flex-direction: column;
+             }
+
+             .modal-popup {
+               padding: 1.5rem;
+               width: 95%;
+             }
+
+             .results-table {
+               font-size: 0.875rem;
+             }
+
+             .results-table th,
+             .results-table td {
+               padding: 0.75rem 0.5rem;
+             }
+           }
+         `}</style>
             
         </>
     );
