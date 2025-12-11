@@ -1,0 +1,199 @@
+/* ===== MODERN CAROUSEL ===== */
+.wrapper {
+    width: 100%;
+    padding: 60px 5%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+    flex-wrap: wrap;
+}
+
+.card {
+    position: relative;
+    width: 280px;
+    height: 400px;
+    border-radius: 24px;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    transform: scale(0.95);
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1) translateY(-10px);
+    box-shadow: 0 25px 60px rgba(102, 126, 234, 0.4);
+    z-index: 10;
+}
+
+.card:hover::before {
+    opacity: 0.9;
+}
+
+.card > .row {
+    position: relative;
+    z-index: 2;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    width: 100%;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+    backdrop-filter: blur(10px);
+}
+
+.card > .row > .icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+    font-size: 20px;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.card > .row > .description {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s ease;
+}
+
+.card:hover > .row > .description {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.description h4 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.description p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Radio inputs hidden */
+input[type="radio"].xD {
+    display: none;
+}
+
+/* Active card state */
+.xD:checked + label {
+    transform: scale(1.05);
+    box-shadow: 0 30px 70px rgba(102, 126, 234, 0.5);
+}
+
+.xD:checked + label > .row > .description {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.xD:checked + label::before {
+    opacity: 0.95;
+}
+
+/* Price badge (if needed) */
+.card-price {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #667eea;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+}
+
+/* Responsive design */
+@media screen and (max-width: 1200px) {
+    .container {
+        max-width: 900px;
+    }
+    
+    .card {
+        width: 260px;
+        height: 380px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        gap: 30px;
+    }
+    
+    .card {
+        width: 100%;
+        max-width: 400px;
+        height: 450px;
+        transform: scale(1);
+    }
+    
+    .card > .row > .description {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    
+    .card:hover {
+        transform: scale(1.02) translateY(-5px);
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .card {
+        height: 400px;
+    }
+    
+    .description h4 {
+        font-size: 1.1rem;
+    }
+    
+    .description p {
+        font-size: 0.85rem;
+    }
+}
