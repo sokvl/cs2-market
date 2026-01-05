@@ -2,11 +2,20 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Home from './pages/Home'
+import Contact from './pages/Contact'
+import Market from './pages/Market'
+import { Footer, Navbar } from './components/index';
 import { ThemeProvider } from '../src/ThemeContext';
+import UserDashboard from './pages/UserDashboard';
 import { AppStateProvider } from './lib/AppStateManager';
 import { AuthProvider } from './lib/AuthContext';
+import UserProfile from '../src/pages/UserProfile';
+import ErrorPage from './pages/ErrorPage';
+
 import PrivateRoute from './utils/PrivateRoute'
-import { Navbar } from './components/index';
+import LoginSuccess from './pages/LoginSuccess';
+import PaymentSuccess from '../src/components/success/Succes';
+
 function App() {
 
   return ( 
@@ -20,12 +29,19 @@ function App() {
                 <ThemeProvider>
                     <Router>   
                         <Navbar />
-
+                        <PrivateRoute path='/UserDashboard' exact element={<UserDashboard />} />
+                        <PrivateRoute path='/UserProfile' exact element={<UserProfile />} />
                         <Routes>
-                           <Route path="/" element={<Home />} />
-                           
+                            <Route path="/" element={<Home />} />
+                            <Route path='/market'  exact element = {<Market />}/>
+                            <Route path='/contact' exact element={<Contact />} />
+                            <Route path='/auth_success' exact element={<LoginSuccess />} />
+                            <Route path='/success' exact element={<PaymentSuccess />} />
+                            <Route path='/UserDashboard/:section' exact element={<UserDashboard />} />
+                            <Route path='/UserProfile/:steam_id' exact element={<UserProfile />} />
+                            <Route path='*' element={<ErrorPage />} />
                         </Routes>
-                        
+                        <Footer/>
                     </Router>
                     <ToastContainer
                         position="top-right"

@@ -6,7 +6,7 @@ import { useTheme } from '../../ThemeContext';
 import './navbar.css'
 import logo from "../../assets/pngs/logo_cs2market.png";
 import LoginButton from '../loginbutton/LoginButton';
-
+import Notifications from '../notifications/Notifications';
 
 function Navbar() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -38,6 +38,7 @@ function Navbar() {
         </div>   
         <div className="rightSide"> 
             <Link className='menuLink' to="/market"> Market </Link>
+            <Notifications />
             <LoginButton />
             <Link>
               <button onClick={toggleTheme} className='theme-toggle-btn' aria-label='Toggle theme'>
@@ -82,6 +83,7 @@ function Navbar() {
                 { isDarkMode ? <i className="fa-solid fa-sun"></i> : <i className="fa-solid fa-moon"></i>}
               </button>
               <div className='notifications-wrapper'>
+                <Notifications />
               </div>
             </div>
           </div>
