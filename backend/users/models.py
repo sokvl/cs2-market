@@ -16,7 +16,6 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.username} id: {self.user_id}'
 
-
 class Wallet(models.Model):
     wallet_id = models.AutoField(primary_key=True)
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE)
