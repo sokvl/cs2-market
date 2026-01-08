@@ -1,4 +1,4 @@
-name: Release with build
+name: Release
 
 on:
   push:
@@ -18,16 +18,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build project
+      - name: Build
         run: |
-          mkdir -p build
-          echo "Example build file" > build/app.txt
-
-      - name: Zip build
-        run: |
-          cd build
-          zip -r ../build.zip .
-          cd ..
+          mkdir build
+          echo "example" > build/app.txt
+          zip -r build.zip build/
 
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
@@ -38,8 +33,3 @@ jobs:
             @semantic-release/git
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload ZIP to release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: build.zip
