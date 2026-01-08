@@ -32,6 +32,7 @@ jobs:
       - name: Semantic Release
         uses: cycjimmy/semantic-release-action@v4
         with:
+          working_directory: backend
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
